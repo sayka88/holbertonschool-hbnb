@@ -1,0 +1,57 @@
+class User {
+    + id: UUID4
+    + email: string
+    + password: string
+    + first_name: string
+    + last_name: string
+    + created_at: datetime
+    + updated_at: datetime
+}
+
+class Place {
+    + id: UUID4
+    + name: string
+    + description: string
+    + address: string
+    + city_id: UUID4
+    + latitude: float
+    + longitude: float
+    + host_id: UUID4
+    + num_rooms: int
+    + num_bathrooms: int
+    + price_per_night: float
+    + max_guests: int
+    + created_at: datetime
+    + updated_at: datetime
+}
+
+class Review {
+    + id: UUID4
+    + text: string
+    + rating: int
+    + user_id: UUID4
+    + place_id: UUID4
+    + created_at: datetime
+    + updated_at: datetime
+}
+
+class Amenity {
+    + id: UUID4
+    + name: string
+    + created_at: datetime
+    + updated_at: datetime
+}
+
+class City {
+    + id: UUID4
+    + name: string
+    + country_id: UUID4
+    + created_at: datetime
+    + updated_at: datetime
+}
+
+class Country {
+    + id: UUID4
+    + name: string
+}
+
