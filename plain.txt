@@ -55,3 +55,12 @@ class Country {
     + name: string
 }
 
+
+
+One User can own several Places (1..*).
+One Place belongs to one City (0..1).
+One City belongs to one Country (1..*).
+One Place can have several Reviews (0..*).
+One Review written by one User (1..1).
+One Place can have several Amenities (0..*).
+User can write reviews on a Place that he does not own (0..*)
