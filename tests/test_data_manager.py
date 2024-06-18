@@ -2,6 +2,7 @@
 
 import unittest
 import os
+sys.path.append('..')
 from data_manager import DataManager
 
 class TestDataManager(unittest.TestCase):
