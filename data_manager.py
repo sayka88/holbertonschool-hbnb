@@ -1,19 +1,6 @@
 #!/usr/bin/python3
 """Data manager for the application."""
 
-from persistence.amenity_repository import AmenityRepository
-from persistence.city_repository import CityRepository
-from persistence.country_repository import CountryRepository
-from persistence.place_repository import PlaceRepository
-from persistence.review_repository import ReviewRepository
-from persistence.user_repository import UserRepository
-from model.amenity import Amenity
-from model.city import City
-from model.country import Country
-from model.place import Place
-from model.review import Review
-from model.user import User
-
 class DataManager:
     """Class to manage CRUD operations for various entities."""
     def __init__(self):
