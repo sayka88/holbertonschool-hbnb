@@ -53,6 +53,17 @@ class UserApiTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(json.loads(response.data)['first_name'], 'Updated')
 
+    def test_delete_user(self):
+        response = self.client.post(
+            '/users', data=json.dumps(self.test_user),
+            content_type='application/json'
+        )
+        user_id = json.loads(response.data)['id']
+        response = self.client.delete(f'/users/{user_id}')
+        self.assertEqual(response.status_code, 204)
+        response = self.client.get(f'/users/{user_id}')
+        self.assertEqual(response.status_code, 404)
+
 
 if __name__ == '__main__':
     unittest.main()
