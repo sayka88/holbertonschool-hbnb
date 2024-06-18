@@ -1,50 +1,59 @@
 #!/usr/bin/python3
 # DataManager Implementation
 
+import uuid
 import json
 import os
-import uuid
-from persistence.ipersistence_manager import IPersistenceManager
 
-class DataManager(IPersistenceManager):
-    def __init__(self, storage_file='data.json'):
-        self.storage_file = storage_file
-        self.data = self._load_data()
-
-    def _load_data(self):
-        if not os.path.exists(self.storage_file):
-            return {}
-        with open(self.storage_file, 'r') as file:
-            return json.load(file)
-
-    def _save_data(self):
-        with open(self.storage_file, 'w') as file:
-            json.dump(self.data, file)
+class DataManager:
+    def __init__(self, file_name='data.json'):
+        self.file_name = file_name
+        if not os.path.exists(self.file_name):
+            with open(self.file_name, 'w') as f:
+                json.dump({}, f)
 
     def save(self, entity):
-        entity_id = str(uuid.uuid4())
+        with open(self.file_name, 'r') as f:
+            data = json.load(f)
+        
+        entity_id = str(len(data) + 1)
         entity['id'] = entity_id
-        self.data[entity_id] = entity
-        self._save_data()
+        data[entity_id] = entity
+
+        with open(self.file_name, 'w') as f:
+            json.dump(data, f)
+        
         return entity
 
     def get(self, entity_id):
-        return self.data.get(entity_id, None)
+        with open(self.file_name, 'r') as f:
+            data = json.load(f)
+        
+        return data.get(entity_id, None)
 
     def update(self, entity_id, new_data):
-        if entity_id in self.data:
-            self.data[entity_id].update(new_data)
-            self._save_data()
-            return True
-        return False
+        with open(self.file_name, 'r') as f:
+            data = json.load(f)
+
+        if entity_id in data:
+            data[entity_id].update(new_data)
+            with open(self.file_name, 'w') as f:
+                json.dump(data, f)
+            return data[entity_id]
+        return None
 
     def delete(self, entity_id):
-        if entity_id in self.data:
-            del self.data[entity_id]
-            self._save_data()
+        with open(self.file_name, 'r') as f:
+            data = json.load(f)
+
+        if entity_id in data:
+            del data[entity_id]
+            with open(self.file_name, 'w') as f:
+                json.dump(data, f)
             return True
         return False
 
     def get_all(self):
-        return list(self.data.values())
-
+        with open(self.file_name, 'r') as f:
+            data = json.load(f)
+        return list(data.values())
