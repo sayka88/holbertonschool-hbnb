@@ -1,79 +1,44 @@
 #!/usr/bin/python3
-"""Importing required libraries and packages"""
-from flask import Flask, request, jsonify
-from flask_restful import Resource, Api
-from persistence.data_manager import DataManager
-from models.user import User
-import re
 
+from flask import Flask, request, jsonify
+from persistence.data_manager import DataManager
 
 app = Flask(__name__)
-api = Api(app)
 data_manager = DataManager()
 
+@app.route('/users', methods=['POST'])
+def create_user():
+    data = request.get_json()
+    # Логика валидации и сохранения пользователя
+    new_user = data_manager.save(data)
+    return jsonify(new_user), 201
 
-def validate_email(email):
-    return re.match(r"[^@]+@[^@]+\.[^@]+", email)
+@app.route('/users', methods=['GET'])
+def get_users():
+    users = data_manager.get_all()
+    return jsonify(users), 200
 
+@app.route('/users/<user_id>', methods=['GET'])
+def get_user(user_id):
+    user = data_manager.get(user_id)
+    if user:
+        return jsonify(user), 200
+    else:
+        return jsonify({'error': 'User not found'}), 404
 
-class UserResource(Resource):
-    """UserResource class"""
-    def get(self, user_id=None):
-        if user_id:
-            user = data_manager.get(user_id, 'user')
-            if not user:
-                return {"error": "User not found"}, 404
-            return jsonify(user)
-        else:
-            users = data_manager._load_entities('user')
-            return jsonify(list(users.values()))
+@app.route('/users/<user_id>', methods=['PUT'])
+def update_user(user_id):
+    data = request.get_json()
+    updated_user = data_manager.update(user_id, data)
+    return jsonify(updated_user), 200
 
-    def post(self):
-        data = request.get_json()
-        email = data.get('email')
-        if not validate_email(email):
-            return {"error": "Invalid email format"}, 400
-        if any(
-            user['email'] == email for user in
-            data_manager._load_entities('user').values()
-        ):
-            return {"error": "Email already exists"}, 409
-
-        try:
-            user = User.from_dict(data)
-            data_manager.save(user)
-            return jsonify(user.to_dict()), 201
-        except Exception as e:
-            return {"error": str(e)}, 400
-
-    def put(self, user_id):
-        user_data = data_manager.get(user_id, 'user')
-        if not user_data:
-            return {"error": "User not found"}, 404
-
-        data = request.get_json()
-        if 'email' in data and not validate_email(data['email']):
-            return {"error": "Invalid email format"}, 400
-
-        for key, value in data.items():
-            if key in user_data:
-                user_data[key] = value
-
-        user_data['updated_at'] = datetime.now().isoformat()
-        user = User.from_dict(user_data)
-        data_manager.update(user)
-        return jsonify(user.to_dict())
-
-    def delete(self, user_id):
-        user = data_manager.get(user_id, 'user')
-        if not user:
-            return {"error": "User not found"}, 404
-        data_manager.delete(user_id, 'user')
+@app.route('/users/<user_id>', methods=['DELETE'])
+def delete_user(user_id):
+    result = data_manager.delete(user_id)
+    if result:
         return '', 204
-
-
-api.add_resource(UserResource, '/users', '/users/<string:user_id>')
-
+    else:
+        return jsonify({'error': 'User not found'}), 404
 
 if __name__ == '__main__':
     app.run(debug=True)
