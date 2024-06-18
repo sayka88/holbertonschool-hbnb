@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """Importing Packages and required Libraries"""
-import uniitest
+import unittest
 import json
 from app import app, data_manager
 

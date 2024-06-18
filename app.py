@@ -2,7 +2,7 @@
 """Importing required libraries and packages"""
 from flask import Flask, request, jsonify
 from flask_restful import Resource, Api
-from models.data_manager import DataManager
+from persistence.data_manager import DataManager
 from models.user import User
 import re
 
