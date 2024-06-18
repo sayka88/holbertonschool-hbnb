@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import os
 import unittest
 from persistence.data_manager import DataManager
