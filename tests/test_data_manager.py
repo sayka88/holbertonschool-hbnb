@@ -2,6 +2,7 @@
 
 import unittest
 import os
+import sys
 sys.path.append('..')
 from data_manager import DataManager
 
