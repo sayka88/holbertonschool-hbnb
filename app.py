@@ -1,18 +1,23 @@
-# hbnb_evolution/app.py
+#!/usr/bin/python3
+"""Importing required libraries and packages"""
 from flask import Flask, request, jsonify
 from flask_restful import Resource, Api
 from models.data_manager import DataManager
 from models.user import User
 import re
 
+
 app = Flask(__name__)
 api = Api(app)
 data_manager = DataManager()
 
+
 def validate_email(email):
     return re.match(r"[^@]+@[^@]+\.[^@]+", email)
 
+
 class UserResource(Resource):
+    """UserResource class"""
     def get(self, user_id=None):
         if user_id:
             user = data_manager.get(user_id, 'user')
@@ -28,7 +33,10 @@ class UserResource(Resource):
         email = data.get('email')
         if not validate_email(email):
             return {"error": "Invalid email format"}, 400
-        if any(user['email'] == email for user in data_manager._load_entities('user').values()):
+        if any(
+            user['email'] == email for user in
+            data_manager._load_entities('user').values()
+        ):
             return {"error": "Email already exists"}, 409
 
         try:
@@ -63,8 +71,9 @@ class UserResource(Resource):
         data_manager.delete(user_id, 'user')
         return '', 204
 
+
 api.add_resource(UserResource, '/users', '/users/<string:user_id>')
+
 
 if __name__ == '__main__':
     app.run(debug=True)
-
