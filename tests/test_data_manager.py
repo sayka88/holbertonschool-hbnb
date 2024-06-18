@@ -2,19 +2,19 @@
 
 import os
 import unittest
-from persistence.data_manager import DataManager
+from data_manager import DataManager
 
 class TestDataManager(unittest.TestCase):
 
     def setUp(self):
         self.data_manager = DataManager(storage_file='test_data.json')
         # Ensure the test data file is empty before each test
-        self.data_manager.data = {}
-        self.data_manager._save_data()
+        self.data_manager._save_data({})  # Clear the data
 
     def tearDown(self):
         # Remove the test data file after each test
-        os.remove('test_data.json')
+        if os.path.exists('test_data.json'):
+            os.remove('test_data.json')
 
     def test_save_entity(self):
         entity = {'name': 'Test Entity'}
