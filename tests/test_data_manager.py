@@ -2,14 +2,17 @@
 
 import os
 import unittest
+import sys
+sys.path.append('..')
 from data_manager import DataManager
 
 class TestDataManager(unittest.TestCase):
 
     def setUp(self):
-        self.data_manager = DataManager(storage_file='test_data.json')
+        self.data_manager = DataManager(file_name='test_data.json')
         # Ensure the test data file is empty before each test
-        self.data_manager._save_data({})  # Clear the data
+        with open('test_data.json', 'w') as f:
+            f.write('{}')
 
     def tearDown(self):
         # Remove the test data file after each test
@@ -32,7 +35,7 @@ class TestDataManager(unittest.TestCase):
         entity = {'name': 'Test Entity'}
         saved_entity = self.data_manager.save(entity)
         updated = self.data_manager.update(saved_entity['id'], {'name': 'Updated Entity'})
-        self.assertTrue(updated)
+        self.assertIsNotNone(updated)
         retrieved_entity = self.data_manager.get(saved_entity['id'])
         self.assertEqual(retrieved_entity['name'], 'Updated Entity')
 
