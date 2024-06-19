@@ -77,10 +77,12 @@ class DataManager:
         self.data['cities'][city_id] = city
         self._save()
         return city
-
+        
+    @patch.object(DataManager, 'get_city')
     def get_city(self, city_id):
         return self.data['cities'].get(city_id)
 
+    @patch.object(DataManager, 'update_city')
     def update_city(self, city_id, new_data):
         if city_id in self.data['cities']:
             self.data['cities'][city_id].update(new_data)
@@ -88,6 +90,7 @@ class DataManager:
             return self.data['cities'][city_id]
         return None
 
+    @patch.object(DataManager, 'delete_city')
     def delete_city(self, city_id):
         if city_id in self.data['cities']:
             del self.data['cities'][city_id]
@@ -95,5 +98,6 @@ class DataManager:
             return True
         return False
 
+    @patch.object(DataManager, 'get_all_cities')
     def get_all_cities(self):
         return list(self.data['cities'].values())
