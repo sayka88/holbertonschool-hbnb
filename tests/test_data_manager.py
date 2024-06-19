@@ -1,4 +1,6 @@
+#!/usr/bin/python3
 
+from unittest.mock import patch, MagicMock
 import unittest
 import os
 import sys
