@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-# DataManager Implementation
+# data_manager.py
 
 import uuid
 import json
@@ -11,7 +11,6 @@ from models.country import Country
 from models.place import Place
 from models.review import Review
 from models.user import User
-from data_manager import DataManager
 
 class DataManager:
     def __init__(self, storage_file='data.json'):
@@ -19,57 +18,46 @@ class DataManager:
         if not os.path.exists(self.storage_file):
             with open(self.storage_file, 'w') as f:
                 json.dump({}, f)
-    
+
+        with open(self.storage_file, 'r') as f:
+            self.data = json.load(f)
+
+    def _save(self):
+        with open(self.storage_file, 'w') as f:
+            json.dump(self.data, f)
+
     # Methods for User
     def save(self, entity):
-        with open(self.storage_file, 'r') as f:
-            data = json.load(f)
-        
-        entity_id = str(len(data) + 1)
+        entity_id = str(uuid.uuid4())
         entity['id'] = entity_id
-        data[entity_id] = entity
-
-        with open(self.storage_file, 'w') as f:
-            json.dump(data, f)
-        
+        self.data[entity_id] = entity
+        self._save()
         return entity
 
     def get(self, entity_id):
-        with open(self.storage_file, 'r') as f:
-            data = json.load(f)
-        
-        return data.get(entity_id, None)
+        return self.data.get(entity_id, None)
 
     def update(self, entity_id, new_data):
-        with open(self.storage_file, 'r') as f:
-            data = json.load(f)
-
-        if entity_id in data:
-            data[entity_id].update(new_data)
-            with open(self.storage_file, 'w') as f:
-                json.dump(data, f)
-            return data[entity_id]
+        if entity_id in self.data:
+            self.data[entity_id].update(new_data)
+            self._save()
+            return self.data[entity_id]
         return None
 
     def delete(self, entity_id):
-        with open(self.storage_file, 'r') as f:
-            data = json.load(f)
-
-        if entity_id in data:
-            del data[entity_id]
-            with open(self.storage_file, 'w') as f:
-                json.dump(data, f)
+        if entity_id in self.data:
+            del self.data[entity_id]
+            self._save()
             return True
         return False
 
     def get_all(self):
-        with open(self.storage_file, 'r') as f:
-            data = json.load(f)
-        return list(data.values())
+        return list(self.data.values())
 
-# Methods for Country
+    # Methods for Country
     def save_country(self, country):
-        self.data['countries'][country['code']] = country
+        country_code = country['code']
+        self.data['countries'][country_code] = country
         self._save()
 
     def get_country(self, country_code):
@@ -78,8 +66,9 @@ class DataManager:
     def get_all_countries(self):
         return list(self.data['countries'].values())
 
+    # Methods for City
     def save_city(self, city):
-        city_id = str(len(self.data['cities']) + 1)
+        city_id = str(uuid.uuid4())
         city['id'] = city_id
         self.data['cities'][city_id] = city
         self._save()
@@ -104,7 +93,3 @@ class DataManager:
 
     def get_all_cities(self):
         return list(self.data['cities'].values())
-
-    def _save(self):
-        with open(self.file_name, 'w') as f:
-            json.dump(self.data, f)
