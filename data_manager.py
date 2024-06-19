@@ -5,6 +5,14 @@ import uuid
 import json
 import os
 
+from models.amenity import Amenity
+from models.city import City
+from models.country import Country
+from models.place import Place
+from models.review import Review
+from models.user import User
+from data_manager import DataManager
+
 class DataManager:
     def __init__(self, storage_file='data.json'):
         self.storage_file = storage_file
