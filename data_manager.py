@@ -1,11 +1,10 @@
 #!/usr/bin/python3
 # data_manager.py
 
-import uuid
-import json
-import os
+import unittest
+from unittest.mock import patch, MagicMock
 import sys
-from unittest.mock import patch
+import os
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
