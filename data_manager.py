@@ -68,16 +68,6 @@ class DataManager:
         return list(data.values())
 
 # Methods for Country
-class DataManager:
-    def __init__(self, file_name='data.json'):
-        self.file_name = file_name
-        if not os.path.exists(self.file_name):
-            with open(self.file_name, 'w') as f:
-                json.dump({'countries': {}, 'cities': {}}, f)
-        else:
-            with open(self.file_name, 'r') as f:
-                self.data = json.load(f)
-
     def save_country(self, country):
         self.data['countries'][country['code']] = country
         self._save()
