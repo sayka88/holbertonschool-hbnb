@@ -58,18 +58,12 @@ class DataManager:
     def get_all(self):
         return list(self.data.values())
 
-    # Methods for Country
-    def save_country(self, country):
-        country_code = country['code']
-        self.data['countries'][country_code] = country
-        self._save()
+class TestDataManager(unittest.TestCase):
+    def setUp(self):
+        self.data_manager = DataManager()
 
-    def get_country(self, country_code):
-        return self.data['countries'].get(country_code)
-
-    def get_all_countries(self):
-        return list(self.data['countries'].values())
-
+    # Test methods follow...
+    
     # Methods for City
     @patch.object(DataManager, 'save_city')
     def save_city(self, city):
