@@ -96,5 +96,47 @@ class TestDataManager(unittest.TestCase):
     def get_all_cities(self):
         return list(self.data['cities'].values())
 
+# Tests for Country
+@patch.object(DataManager, 'save_country')
+def test_save_country(self, mock_save_country):
+    mock_save_country.return_value = 1
+    country_data = {'name': 'France'}
+    country_id = self.data_manager.save_country(country_data)
+    self.assertEqual(country_id, 1)
+    mock_save_country.assert_called_once_with(country_data)
+
+@patch.object(DataManager, 'get_country')
+def test_get_country(self, mock_get_country):
+    mock_country = Country(name='France')
+    mock_get_country.return_value = mock_country
+    result = self.data_manager.get_country(1)
+    self.assertEqual(result.name, 'France')
+    mock_get_country.assert_called_once_with(1)
+
+@patch.object(DataManager, 'get_all_countries')
+def test_get_all_countries(self, mock_get_all_countries):
+    mock_countries = [Country(name='France'), Country(name='England')]
+    mock_get_all_countries.return_value = mock_countries
+    result = self.data_manager.get_all_countries()
+    self.assertEqual(len(result), 2)
+    self.assertEqual(result[0].name, 'France')
+    self.assertEqual(result[1].name, 'England')
+    mock_get_all_countries.assert_called_once()
+
+@patch.object(DataManager, 'update_country')
+def test_update_country(self, mock_update_country):
+    mock_update_country.return_value = True
+    updated_data = {'name': 'New France'}
+    result = self.data_manager.update_country(1, updated_data)
+    self.assertTrue(result)
+    mock_update_country.assert_called_once_with(1, updated_data)
+
+@patch.object(DataManager, 'delete_country')
+def test_delete_country(self, mock_delete_country):
+    mock_delete_country.return_value = True
+    result = self.data_manager.delete_country(1)
+    self.assertTrue(result)
+    mock_delete_country.assert_called_once_with(1)
+
 if __name__ == '__main__':
     unittest.main()
