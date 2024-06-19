@@ -68,6 +68,7 @@ class DataManager:
         return list(data.values())
 
 # Methods for Country
+class DataManager:
     def __init__(self, file_name='data.json'):
         self.file_name = file_name
         if not os.path.exists(self.file_name):
