@@ -21,7 +21,7 @@ class TestDataManager(unittest.TestCase):
         if os.path.exists('test_data.json'):
             os.remove('test_data.json')
 
-    def test_save_entity(self):
+    def test_save_entity(s    elf):
         entity = {'name': 'Test'}
         saved_entity = self.data_manager.save(entity)
         self.assertEqual(saved_entity['name'], 'Test')
@@ -53,6 +53,29 @@ class TestDataManager(unittest.TestCase):
         self.data_manager.save(entity2)
         all_entities = self.data_manager.get_all()
         self.assertEqual(len(all_entities), 2)
+
+    # Tests for City
+    def setUp(self):
+        self.data_manager = DataManager(file_name='test_data.json')
+        self.data_manager.data = {'countries': {}, 'cities': {}}
+        self.data_manager._save()
+
+    def tearDown(self):
+        if os.path.exists('test_data.json'):
+            os.remove('test_data.json')
+
+    def test_save_and_get_country(self):
+        country = {'code': 'US', 'name': 'United States'}
+        self.data_manager.save_country(country)
+        self.assertEqual(self.data_manager.get_country('US'), country)
+
+    def test_save_and_get_city(self):
+        country = {'code': 'US', 'name': 'United States'}
+        self.data_manager.save_country(country)
+        city = {'name': 'New York', 'country_code': 'US'}
+        saved_city = self.data_manager.save_city(city)
+        self.assertIn('id', saved_city)
+        self.assertEqual(self.data_manager.get_city(saved_city['id']), saved_city)
 
 if __name__ == '__main__':
     unittest.main()
