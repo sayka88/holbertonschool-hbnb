@@ -71,6 +71,7 @@ class DataManager:
         return list(self.data['countries'].values())
 
     # Methods for City
+    @patch.object(DataManager, 'save_city')
     def save_city(self, city):
         city_id = str(uuid.uuid4())
         city['id'] = city_id
