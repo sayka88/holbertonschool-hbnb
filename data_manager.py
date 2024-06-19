@@ -101,3 +101,6 @@ class DataManager:
     @patch.object(DataManager, 'get_all_cities')
     def get_all_cities(self):
         return list(self.data['cities'].values())
+
+if __name__ == '__main__':
+    unittest.main()
