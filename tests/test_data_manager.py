@@ -21,7 +21,7 @@ class TestDataManager(unittest.TestCase):
         if os.path.exists('test_data.json'):
             os.remove('test_data.json')
 
-    def test_save_entity(s    elf):
+    def test_save_entity(self):
         entity = {'name': 'Test'}
         saved_entity = self.data_manager.save(entity)
         self.assertEqual(saved_entity['name'], 'Test')
