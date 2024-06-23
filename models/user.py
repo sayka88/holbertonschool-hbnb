@@ -1,42 +1,50 @@
 #!/usr/bin/python3
+"""Model for representing users."""
 
-"""Import BaseModel class"""
-from models.base_model import BaseModel
+import uuid
+from datetime import datetime
 
 
-class User(BaseModel):
-    """Creating User Classs"""
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.email = kwargs.get('email', '')
-        self.password = kwargs.get('password', '')
-        self.first_name = kwargs.get('first_name', '')
-        self.last_name = kwargs.get('last_name', '')
+class User:
+    """Class representing a user."""
+    def __init__(self, username, email, password):
+        # Generate a UUID4 for unique identification
+        self.user_id = str(uuid.uuid4())
+        self.username = username
+        self.email = email
+        # In a real-world scenario, hash the password before storing it
+        self.password = password
+        self.created_at = datetime.now()  # Record creation timestamp
+        self.updated_at = datetime.now()  # Record update timestamp
+        self.reviews = []
+
+    def add_review(self, review):
+        """Adds a review."""
+        self.reviews.append(review)
+
+    def list_reviews(self):
+        """Lists the reviews."""
+        return self.reviews
+
+    def update_user_data(self, new_data):
+        """Updates the user data with new data."""
+        for key, value in new_data.items():
+            setattr(self, key, value)
+
+    def check_password(self, password):
+        """Checks if the password is correct."""
+        # In a real-world scenario, compare hashed passwords
+        return self.password == password
 
     def to_dict(self):
+        """Returns the user data as a dictionary."""
         return {
-            'id': self.id,
+            'user_id': self.user_id,
+            'username': self.username,
             'email': self.email,
-            'first_name': self.first_name,
-            'last_name': self.last_name,
+            # Convert datetime to ISO 8601 format
             'created_at': self.created_at.isoformat(),
-            'updated_at': self.updated_at.isoformat()
+            # Convert datetime to ISO 8601 format
+            'updated_at': self.updated_at.isoformat(),
+            'reviews': self.reviews
         }
-
-    @classmethod
-    def from_dict(cls, data):
-        user = cls(
-            email=data.get('email'),
-            first_name=data.get('first_name'),
-            last_name=data.get('last_name'),
-            password=data.get('password')
-        )
-
-        user.id = data.get('id', str(uuid.uuid4()))
-        user.created_at = datetime.fromisoformat(
-            data.get('created_at', datetime.now().isoformat())
-        )
-        user.updated_at = datetime.fromisoformat(
-            data.get('updated_at', datetime.now().isoformat())
-        )
-        return user
