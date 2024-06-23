@@ -1,80 +1,133 @@
-import json
-import uuid
-import os
+#!/usr/bin/python3
+"""Data manager for the application."""
 
-from models.amenity import Amenity
-from models.city import City
-from models.country import Country
-from models.place import Place
-from models.review import Review
-from models.user import User
+from persistence.amenity_repository import AmenityRepository
+from persistence.city_repository import CityRepository
+from persistence.country_repository import CountryRepository
+from persistence.place_repository import PlaceRepository
+from persistence.review_repository import ReviewRepository
+from persistence.user_repository import UserRepository
+from model.amenity import Amenity
+from model.city import City
+from model.country import Country
+from model.place import Place
+from model.review import Review
+from model.user import User
 
 class DataManager:
-    def _init_(self, storage_file='data.json'):
-        self.storage_file = storage_file
-        if not os.path.exists(self.storage_file):
-            with open(self.storage_file, 'w') as f:
-                json.dump({'cities': {}, 'countries': {}}, f)
-        
-        with open(self.storage_file, 'r') as f:
-            self.data = json.load(f)
-    
-    def _save(self):
-        with open(self.storage_file, 'w') as f:
-            json.dump(self.data, f)
+    """Class to manage CRUD operations for various entities."""
+    def __init__(self):
+        self.place_repository = PlaceRepository()
+        self.user_repository = UserRepository()
+        self.review_repository = ReviewRepository()
+        self.amenity_repository = AmenityRepository()
+        self.country_repository = CountryRepository()
+        self.city_repository = CityRepository()
 
-    # Methods for City
-    def save_city(self, city):
-        city_id = str(uuid.uuid4())
-        city['id'] = city_id
-        self.data['cities'][city_id] = city
-        self._save()
-        return city_id
+    # Methods for Place
+    def save_place(self, place_data):
+        place = Place(**place_data)
+        self.place_repository.save(place)
+        return place.place_id
 
-    def get_city(self, city_id):
-        return self.data['cities'].get(city_id)
+    def get_place(self, place_id):
+        return self.place_repository.get(place_id)
 
-    def update_city(self, city_id, new_data):
-        if city_id in self.data['cities']:
-            self.data['cities'][city_id].update(new_data)
-            self._save()
-            return self.data['cities'][city_id]
-        return None
+    def update_place(self, place_id, new_data):
+        return self.place_repository.update(place_id, new_data)
 
-    def delete_city(self, city_id):
-        if city_id in self.data['cities']:
-            del self.data['cities'][city_id]
-            self._save()
-            return True
-        return False
+    def delete_place(self, place_id):
+        return self.place_repository.delete(place_id)
 
-    def get_all_cities(self):
-        return list(self.data['cities'].values())
+    def get_all_places(self):
+        return self.place_repository.get_all()
+
+    # Methods for User
+    def save_user(self, user_data):
+        user = User(**user_data)
+        self.user_repository.save(user)
+        return user.user_id
+
+    def get_user(self, user_id):
+        return self.user_repository.get(user_id)
+
+    def update_user(self, user_id, new_data):
+        return self.user_repository.update(user_id, new_data)
+
+    def delete_user(self, user_id):
+        return self.user_repository.delete(user_id)
+
+    def get_all_users(self):
+        return self.user_repository.get_all()
+
+    # Methods for Review
+    def save_review(self, review_data):
+        review = Review(**review_data)
+        self.review_repository.save(review)
+        return review.review_id
+
+    def get_review(self, review_id):
+        return self.review_repository.get(review_id)
+
+    def update_review(self, review_id, new_data):
+        return self.review_repository.update(review_id, new_data)
+
+    def delete_review(self, review_id):
+        return self.review_repository.delete(review_id)
+
+    def get_all_reviews(self):
+        return self.review_repository.get_all()
+
+    # Methods for Amenity
+    def save_amenity(self, amenity_data):
+        amenity = Amenity(**amenity_data)
+        self.amenity_repository.save(amenity)
+        return amenity.amenity_id
+
+    def get_amenity(self, amenity_id):
+        return self.amenity_repository.get(amenity_id)
+
+    def update_amenity(self, amenity_id, new_data):
+        return self.amenity_repository.update(amenity_id, new_data)
+
+    def delete_amenity(self, amenity_id):
+        return self.amenity_repository.delete(amenity_id)
+
+    def get_all_amenities(self):
+        return self.amenity_repository.get_all()
 
     # Methods for Country
-    def save_country(self, country):
-        country_id = str(uuid.uuid4())
-        country['id'] = country_id
-        self.data['countries'][country_id] = country
-        self._save()
-        return country_id
+    def save_country(self, country_data):
+        country = Country(**country_data)
+        self.country_repository.save(country)
+        return country.country_id
 
     def get_country(self, country_id):
-        return self.data['countries'].get(country_id)
+        return self.country_repository.get(country_id)
 
     def update_country(self, country_id, new_data):
-        if country_id in self.data['countries']:
-            self.data['countries'][country_id].update(new_data)
-            self._save()
-            return self.data['countries'][country_id]
-        return None
+        return self.country_repository.update(country_id, new_data)
 
     def delete_country(self, country_id):
-        if country_id in self.data['countries']:
-            del self.data['countries'][country_id]
-            self._save()
-            return True
-        return False
+        return self.country_repository.delete(country_id)
 
     def get_all_countries(self):
-        return list(self.data['countries'].values())
+        return self.country_repository.get_all()
+
+    # Methods for City
+    def save_city(self, city_data):
+        city = City(**city_data)
+        self.city_repository.save(city)
+        return city.city_id
+
+    def get_city(self, city_id):
+        return self.city_repository.get(city_id)
+
+    def update_city(self, city_id, new_data):
+        return self.city_repository.update(city_id, new_data)
+
+    def delete_city(self, city_id):
+        return self.city_repository.delete(city_id)
+
+    def get_all_cities(self):
+        return self.city_repository.get_all()
